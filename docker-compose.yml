@@ -1,0 +1,60 @@
+services:
+  mongodb:
+    image: mongo:7-jammy
+    container_name: airesume-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: airesumebuilder
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - airesume-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: airesume-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongodb:27017/airesumebuilder
+      - NODE_ENV=production
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - airesume-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: airesume-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - airesume-network
+
+networks:
+  airesume-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
