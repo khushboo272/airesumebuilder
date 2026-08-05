@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: airesume-config
+  namespace: airesume
+  labels:
+    app.kubernetes.io/name: airesumebuilder
+data:
+  NODE_ENV: "production"
+  PORT: "5000"
+  GEMINI_MODEL: "gemini-3.6-flash"
+  CLIENT_ORIGIN: "http://localhost,http://airesume.local"
+  JWT_EXPIRES_IN: "7d"
+  COOKIE_NAME: "arr_token"

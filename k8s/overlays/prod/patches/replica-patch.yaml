@@ -1,0 +1,18 @@
+# Production environment: higher replicas for availability
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airesume-backend
+  namespace: airesume
+spec:
+  replicas: 3
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airesume-frontend
+  namespace: airesume
+spec:
+  replicas: 3

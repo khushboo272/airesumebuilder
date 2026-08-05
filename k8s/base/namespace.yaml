@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: airesume
+  labels:
+    app.kubernetes.io/name: airesumebuilder
+    app.kubernetes.io/managed-by: kustomize

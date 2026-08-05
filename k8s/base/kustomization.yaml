@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: airesume
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - mongodb-statefulset.yaml
+  - mongodb-service.yaml
+  - backend-deployment.yaml
+  - backend-service.yaml
+  - frontend-deployment.yaml
+  - frontend-service.yaml
+  - ingress.yaml
+  - hpa.yaml
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/part-of: airesumebuilder
+
+images:
+  - name: airesumebuilder-backend
+    newName: docker.io/khushboo272/airesumebuilder-backend
+    newTag: latest
+  - name: airesumebuilder-frontend
+    newName: docker.io/khushboo272/airesumebuilder-frontend
+    newTag: latest

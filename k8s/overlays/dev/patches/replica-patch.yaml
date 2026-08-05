@@ -1,0 +1,18 @@
+# Dev environment: single replica for each service to reduce resource usage
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airesume-backend
+  namespace: airesume
+spec:
+  replicas: 1
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airesume-frontend
+  namespace: airesume
+spec:
+  replicas: 1

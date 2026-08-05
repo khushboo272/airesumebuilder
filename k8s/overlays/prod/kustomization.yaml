@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  - path: patches/replica-patch.yaml
+  - path: patches/ingress-tls-patch.yaml
+
+# Production environment: higher replicas, TLS enabled on Ingress
+# Consider using MongoDB Atlas (external) instead of the in-cluster StatefulSet.
+# To exclude the StatefulSet, remove mongodb-statefulset.yaml and mongodb-service.yaml
+# from base/kustomization.yaml and set MONGO_URI secret to your Atlas connection string.
