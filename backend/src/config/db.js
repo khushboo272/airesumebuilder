@@ -4,10 +4,15 @@ const env = require("./env");
 mongoose.set("strictQuery", true);
 
 async function connectDB() {
-    const conn = await mongoose.connect(env.mongoUri, {
-        serverSelectionTimeoutMS: 10_000,
-    });
-    console.log('MongoDB connected: ', conn.connection.host, '/', conn.connection.name);
+    try {
+        const conn = await mongoose.connect(env.mongoUri, {
+            serverSelectionTimeoutMS: 10_000,
+            family: 4,
+        });
+        console.log('MongoDB connected: ', conn.connection.host, '/', conn.connection.name);
+    } catch (err) {
+        console.error("MongoDB initial connection error:", err.message);
+    }
 
     mongoose.connection.on("error", (err) => {
         console.error("MongoDB error:", err.message);
