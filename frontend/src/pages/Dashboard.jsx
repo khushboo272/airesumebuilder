@@ -13,16 +13,10 @@ import { AtsGauge } from "@/components/dashboard/AtsGauge";
 import { ProfileCard } from "@/components/dashboard/ProfileCard";
 import { VersionStack } from "@/components/dashboard/VersionStack";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
-import { KeepSharpCard } from "@/components/dashboard/KeepSharpCard";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { useAuth } from "@/context/AuthContext";
 import { useDashboard } from "@/hooks/useDashboard";
 

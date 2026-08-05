@@ -22,7 +22,7 @@ export default function Versions() {
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
 
-  const versions = data?.versions || [];
+  const versions = useMemo(() => data?.versions || [], [data?.versions]);
   const totals = data?.totals || { all: 0, uploads: 0, rewrites: 0 };
 
   const filtered = useMemo(() => {

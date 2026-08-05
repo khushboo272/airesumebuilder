@@ -57,7 +57,7 @@ export default function History() {
   const { data, isLoading, error } = useHistory();
   const [filter, setFilter] = useState("all");
 
-  const events = data?.events || [];
+  const events = useMemo(() => data?.events || [], [data?.events]);
   const totals = data?.totals || { all: 0 };
 
   const filtered = useMemo(() => {

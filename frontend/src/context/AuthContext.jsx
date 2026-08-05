@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/api/auth";
@@ -21,8 +22,22 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    let active = true;
+    authApi
+      .me()
+      .then(({ user }) => {
+        if (active) setUser(user);
+      })
+      .catch(() => {
+        if (active) setUser(null);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const login = useCallback(async (credentials) => {
     const { user } = await authApi.login(credentials);

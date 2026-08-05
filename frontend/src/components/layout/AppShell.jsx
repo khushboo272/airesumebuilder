@@ -30,7 +30,8 @@ export function AppShell() {
 
   // close on route change
   useEffect(() => {
-    setPaletteOpen(false);
+    const t = setTimeout(() => setPaletteOpen(false), 0);
+    return () => clearTimeout(t);
   }, [location.pathname]);
 
   return (

@@ -49,10 +49,11 @@ export function CommandPalette({ open, onClose }) {
 
   useEffect(() => {
     if (open) {
-      setQuery("");
-      setActiveIdx(0);
-      // focus after the modal mounts
-      const t = setTimeout(() => inputRef.current?.focus(), 30);
+      const t = setTimeout(() => {
+        setQuery("");
+        setActiveIdx(0);
+        inputRef.current?.focus();
+      }, 30);
       return () => clearTimeout(t);
     }
   }, [open]);
@@ -81,7 +82,8 @@ export function CommandPalette({ open, onClose }) {
   }, [resumes, query]);
 
   useEffect(() => {
-    setActiveIdx(0);
+    const t = setTimeout(() => setActiveIdx(0), 0);
+    return () => clearTimeout(t);
   }, [query]);
 
   useEffect(() => {
@@ -113,10 +115,7 @@ export function CommandPalette({ open, onClose }) {
   const navMatches = items.filter((i) => i.kind === "nav");
   const resumeMatches = items.filter((i) => i.kind === "resume");
 
-  let renderIdx = -1;
-  function renderItem(it) {
-    renderIdx += 1;
-    const idx = renderIdx;
+  function renderItem(it, idx) {
     const Icon = it.icon;
     const isActive = idx === activeIdx;
     return (
@@ -211,7 +210,7 @@ export function CommandPalette({ open, onClose }) {
                     Navigate
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    {navMatches.map(renderItem)}
+                    {navMatches.map((it) => renderItem(it, items.indexOf(it)))}
                   </div>
                 </div>
               )}
@@ -222,7 +221,7 @@ export function CommandPalette({ open, onClose }) {
                     Resumes
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    {resumeMatches.map(renderItem)}
+                    {resumeMatches.map((it) => renderItem(it, items.indexOf(it)))}
                   </div>
                 </div>
               )}

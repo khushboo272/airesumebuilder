@@ -7,7 +7,6 @@ import {
   GitCompare,
   LineChart,
   FileDown,
-  Zap,
 } from "lucide-react";
 
 const FEATURES = [
@@ -433,30 +432,3 @@ function PdfPreview() {
   );
 }
 
-function SpeedPreview() {
-  return (
-    <div className="rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] p-4">
-      <div className="flex items-center gap-3">
-        <div className="font-display tabular text-[34px] font-semibold tracking-tight text-[var(--ink)]">
-          12s
-        </div>
-        <div className="text-[11px] text-[var(--ink-muted)] leading-snug">
-          avg. analysis time
-          <br />
-          <span className="text-[var(--accent-strong)] font-semibold">
-            Gemini · structured output
-          </span>
-        </div>
-      </div>
-      <div className="mt-3 h-1.5 rounded-full bg-[var(--surface)] overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: "92%" }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)]"
-        />
-      </div>
-    </div>
-  );
-}

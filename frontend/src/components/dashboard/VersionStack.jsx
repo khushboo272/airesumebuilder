@@ -18,15 +18,8 @@ import {
   Minus,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-
-function deltaIcon(delta) {
-  if (delta > 0) return TrendingUp;
-  if (delta < 0) return TrendingDown;
-  return Minus;
-}
 
 function tierFor(score) {
   if (score >= 85) return { label: "Excellent", next: null };
@@ -38,7 +31,6 @@ function tierFor(score) {
 function VersionPill({ version, delta, isLatest }) {
   const isUpload = (version.title || "").toLowerCase().includes("upload");
   const Icon = isUpload ? FileText : PenLine;
-  const DeltaIcon = deltaIcon(delta);
 
   return (
     <motion.div
@@ -48,33 +40,39 @@ function VersionPill({ version, delta, isLatest }) {
       className={cn(
         "flex-1 min-w-[120px] rounded-2xl p-4 border transition-shadow",
         isLatest
-          ? "bg-[var(--accent-soft)] border-[var(--accent)]/30 shadow-card"
-          : "bg-[var(--surface-2)] border-[var(--border)]"
+          ? "bg-[var(--ink)] text-white border-transparent shadow-md"
+          : "bg-[var(--surface-2)] border-[var(--border)] text-[var(--ink)]"
       )}
     >
-      <div className="flex items-center justify-between mb-3">
-        <div
+      <div className="flex items-center justify-between gap-2">
+        <span
           className={cn(
-            "h-7 w-7 rounded-xl flex items-center justify-center",
-            isUpload
-              ? "bg-[var(--surface)] text-[var(--ink-muted)]"
-              : "bg-[var(--accent)] text-white"
+            "text-[10px] font-mono font-medium px-2 py-0.5 rounded-full",
+            isLatest
+              ? "bg-white/15 text-white"
+              : "bg-[var(--surface)] text-[var(--ink-muted)]"
           )}
         >
-          <Icon size={13} />
-        </div>
-        <Badge tone={isLatest ? "ink" : "neutral"}>{version.label}</Badge>
-      </div>
-
-      <div className="flex items-baseline gap-1">
-        <span className="font-display tabular text-[34px] font-semibold leading-none tracking-tight">
-          {version.score}
+          {version.label}
         </span>
-        <span className="text-[11px] text-[var(--ink-muted)]">/100</span>
+        <Icon
+          size={14}
+          className={isLatest ? "text-white/70" : "text-[var(--ink-muted)]"}
+        />
       </div>
 
-      <div className="text-[10px] uppercase tracking-wide text-[var(--ink-muted)] mt-1 font-semibold">
-        {isUpload ? "Upload" : "Rewrite pass"}
+      <div className="mt-3">
+        <div className="font-display text-2xl font-semibold tracking-tight tabular">
+          {version.score}
+        </div>
+        <div
+          className={cn(
+            "text-[11px] truncate mt-0.5",
+            isLatest ? "text-white/70" : "text-[var(--ink-muted)]"
+          )}
+        >
+          {version.title || version.label}
+        </div>
       </div>
 
       {delta != null && (
@@ -87,7 +85,13 @@ function VersionPill({ version, delta, isLatest }) {
             isLatest && delta > 0 && "bg-white text-[var(--success)]"
           )}
         >
-          <DeltaIcon size={10} strokeWidth={2.5} />
+          {delta > 0 ? (
+            <TrendingUp size={10} strokeWidth={2.5} />
+          ) : delta < 0 ? (
+            <TrendingDown size={10} strokeWidth={2.5} />
+          ) : (
+            <Minus size={10} strokeWidth={2.5} />
+          )}
           {delta > 0 ? "+" : ""}
           {delta} pts
         </div>
@@ -199,7 +203,6 @@ export function VersionStack({ versions, resumeId, resumeTitle }) {
   const latest = visible[visible.length - 1];
   const first = visible[0];
   const totalDelta = (latest?.score || 0) - (first?.score || 0);
-  const TotalDeltaIcon = deltaIcon(totalDelta);
 
   return (
     <Card className="h-full flex flex-col">
@@ -268,7 +271,13 @@ export function VersionStack({ versions, resumeId, resumeTitle }) {
                 totalDelta === 0 && "bg-[var(--surface-2)] text-[var(--ink-muted)]"
               )}
             >
-              <TotalDeltaIcon size={12} strokeWidth={2.5} />
+              {totalDelta > 0 ? (
+                <TrendingUp size={12} strokeWidth={2.5} />
+              ) : totalDelta < 0 ? (
+                <TrendingDown size={12} strokeWidth={2.5} />
+              ) : (
+                <Minus size={12} strokeWidth={2.5} />
+              )}
               {totalDelta > 0 ? "+" : ""}
               {totalDelta} pts overall
             </div>

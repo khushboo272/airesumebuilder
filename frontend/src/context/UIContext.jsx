@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+/* eslint-disable react-refresh/only-export-components, react-hooks/immutability */
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,8 +21,11 @@ const VARIANTS = {
   },
 };
 
-let _id = 0;
-const nextId = () => ++_id;
+let toastIdCounter = 0;
+function nextId() {
+  toastIdCounter += 1;
+  return `toast_${toastIdCounter}`;
+}
 
 export function UIProvider({ children }) {
   const [toasts, setToasts] = useState([]);
@@ -29,14 +33,13 @@ export function UIProvider({ children }) {
 
   const dismiss = useCallback((id) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
-    const timer = timers.current.get(id);
-    if (timer) {
-      clearTimeout(timer);
+    if (timers.current.has(id)) {
+      clearTimeout(timers.current.get(id));
       timers.current.delete(id);
     }
   }, []);
 
-  const toast = useCallback(
+  const showToast = useCallback(
     ({ title, description, variant = "info", duration = 4200 } = {}) => {
       const id = nextId();
       setToasts((prev) => [...prev, { id, title, description, variant }]);
@@ -49,18 +52,22 @@ export function UIProvider({ children }) {
     [dismiss]
   );
 
-  // Convenience helpers
-  toast.success = (title, description, opts) =>
-    toast({ title, description, variant: "success", ...opts });
-  toast.error = (title, description, opts) =>
-    toast({ title, description, variant: "error", ...opts });
-  toast.info = (title, description, opts) =>
-    toast({ title, description, variant: "info", ...opts });
+  const toast = useMemo(() => {
+    const fn = (opts) => showToast(opts);
+    fn.success = (title, description, opts) =>
+      showToast({ title, description, variant: "success", ...opts });
+    fn.error = (title, description, opts) =>
+      showToast({ title, description, variant: "error", ...opts });
+    fn.info = (title, description, opts) =>
+      showToast({ title, description, variant: "info", ...opts });
+    return fn;
+  }, [showToast]);
 
   useEffect(() => {
+    const currentTimers = timers.current;
     return () => {
-      timers.current.forEach((t) => clearTimeout(t));
-      timers.current.clear();
+      currentTimers.forEach((t) => clearTimeout(t));
+      currentTimers.clear();
     };
   }, []);
 

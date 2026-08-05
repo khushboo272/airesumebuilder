@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Sparkles, ArrowLeft, Loader2, FileText, Download } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -31,14 +31,12 @@ export default function ResumeDetail() {
 
   const { data, isLoading, error } = useResume(id);
   const resume = data?.resume;
-  const versions = data?.versions || [];
+  const versions = useMemo(() => data?.versions || [], [data?.versions]);
 
-  const [activeVersionId, setActiveVersionId] = useState(null);
-  useEffect(() => {
-    if (!activeVersionId && versions.length) {
-      setActiveVersionId(resume?.currentVersionId || versions[versions.length - 1]._id);
-    }
-  }, [versions, resume, activeVersionId]);
+  const defaultVersionId = resume?.currentVersionId || (versions.length ? versions[versions.length - 1]._id : null);
+  const [selectedVersionId, setSelectedVersionId] = useState(null);
+  const activeVersionId = selectedVersionId || defaultVersionId;
+  const setActiveVersionId = setSelectedVersionId;
 
   const activeVersion = useMemo(
     () => versions.find((v) => v._id === activeVersionId),
